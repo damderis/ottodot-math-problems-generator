@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
 
 async function generateProblem(difficulty: string = 'easy', problemType: string[] = ['addition', 'subtraction', 'multiplication', 'division']) {
   try {
-    const model = 'gemini-2.5-flash-lite'
+    const model = 'gemini-2.5-flash-preview-09-2025'
     
     // Convert difficulty to grade-appropriate level
     const difficultyMap = {
@@ -54,26 +54,22 @@ async function generateProblem(difficulty: string = 'easy', problemType: string[
 CRITICAL: You must respond with ONLY a valid JSON object in this exact format:
 {
   "problem_text": "A clear, engaging word problem suitable for a 10-11 year old",
-  "final_answer": 42
+  "final_answer": 42 or 42.00
 }
 
 Requirements:
-1. The problem_text must be a complete math word problem based on a unique, engaging, and real-world context. It should be designed to develop mathematical problem-solving competency, including both routine and non-routine tasks, as emphasized in the syllabus.
-2. The problem must utilize mathematical concepts and operations that span the entire P1 to P6 syllabus. This includes a mix of:
-- Whole Numbers
-- Fractions
-- Decimals
-- Ratio
-- Percentage
-- Measurement (e.g., Area, Volume, Time)
-- Data Analysis/Interpretation (e.g., Pie Charts).
-3. The final_answer may be a positive integer, a fraction/mixed number, or a decimal. Do not restrict the answer to a positive integer to ensure coverage of P3-P6 content.
-4. The narrative style, characters, and settings must be diverse and varied, using contexts that are fun, relatable, and can include themes relevant to society (e.g., sustainability, savings, budgeting)
-5. The problem structure should encourage the use of mathematical processes such as reasoning, representation (e.g., implicitly requiring the use of models/diagrams), and communication.
-6. The numbers used must be appropriate for the complexity of the operation and the level, ranging from simple mental math to calculations requiring standard P1-P6 algorithms.
-7. Include different question formats (how many total, how many more/less, how many left, what is the ratio/percentage, etc.).
-8. Use clear, simple language with age-appropriate vocabulary, and the problem must allow for a reasonable check on the reasonableness of the final answer within the context.
-9. Examples of diverse scenarios:
+- The problem_text should be a complete math word problem with a unique scenario
+- The final_answer must be a positive integer or decimal with two decimal places (number, decimal, not string)
+- Create diverse and varied problem scenarios - avoid repetitive templates
+- Vary the narrative style, characters, and settings in each problem
+- Use a mix of different contexts: nature, technology, travel, cooking, space, history, etc.
+- Include different question formats (how many total, how many more/less, how many left, etc.)
+- Use basic arithmetic operations (addition, subtraction, multiplication, division)
+- Use numbers reasonable for mental math or simple calculations
+- Use clear, simple language with age-appropriate vocabulary
+- Make problems fun and relatable to children's interests
+
+Examples of diverse scenarios:
 - Space exploration and astronomy
 - Environmental conservation
 - Cultural festivals and traditions
@@ -97,10 +93,9 @@ Respond with ONLY the JSON object, no other text.`
         ],
       },
     ]
-    const config = { maxOutputTokens: 200, temperature: 0.6 }
+
     const response = await ai.models.generateContentStream({
       model,
-      config,
       contents,
     })
 
@@ -246,10 +241,12 @@ Just provide the feedback text, no additional formatting.`
           ],
         },
       ]
+      const config = { maxOutputTokens: 200, temperature: 0.4 }
 
       const response = await ai.models.generateContentStream({
         model,
         contents,
+        config,
       })
 
       for await (const chunk of response) {
