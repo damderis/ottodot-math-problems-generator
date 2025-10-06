@@ -42,7 +42,7 @@ export default function AnswerStep({
         <form onSubmit={submitAnswer} className="space-y-4">
           <div>
             <label htmlFor="answer" className="block text-lg font-medium text-gray-700 mb-2">
-              Your Answer:
+              Your Answer (eg. 12, 12.50):
             </label>
             <Input
               type="number"
